@@ -10,7 +10,7 @@ Willkommen auf meinem Portfolio! Hier zeige ich einige meiner Projekte, die ich 
 ## Online ansehen
 
 Du kannst die Portfolio-Website hier besuchen:  
-[Live-Website](https://Josua-08.github.io/josuaportfolio/)
+[Live-Website](https://josua-08.github.io/josuaportfolio/)
 
 ---
 
