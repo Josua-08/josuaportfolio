@@ -57,13 +57,13 @@
         <h2 class="section-title">About Me</h2>
         <div class="about-content">
           <div class="about-text reveal-content">
-            <p>Hey! I'm Josua, 18 years old — a student and aspiring developer. I learn every day to get better at coding, especially Python, and I enjoy experimenting with small projects and games.</p>
+            <p>Hey! I'm Josua, 18 years old — a student and aspiring developer. I learn every day to get better at coding, especially Python, and I enjoy experimenting with small projects and games.[...]
             <p>I spend a lot of time in the gym working on basketball. I'm inspired by players like Kobe Bryant and Kyrie Irving for their work ethic, creativity, and dedication.</p>
             <p>In my free time I also enjoy fitness, running, and trying new sports and challenges. I see every experience as a chance to learn something new.</p>
           </div>
           <div class="about-image reveal-content">
             <div class="profile-image-container">
-              <img src="images/me.jpg" alt="Josua" class="profile-image" />
+              <img src="images/me.jpg" alt="Josua" class="profile-image" loading="lazy" />
             </div>
           </div>
         </div>
@@ -129,7 +129,8 @@
         <div class="projects-showcase">
           <div class="project-card reveal-content">
             <div class="project-image-container">
-              <img src="images/number-guessing-game.png" alt="Guess the Number Screenshot" />
+              <!-- added project-image class and loading to ensure the image fills the container -->
+              <img src="images/number-guessing-game.png" alt="Guess the Number Screenshot" class="project-image" loading="lazy" />
             </div>
             <div class="project-details">
               <h3 class="project-title">Guess the Number</h3>
@@ -143,11 +144,11 @@
 
           <div class="project-card reveal-content">
             <div class="project-image-container">
-              <img src="images/kobe.jpg" alt="Portfolio Website Screenshot" class="project-image" />
+              <img src="images/kobe.jpg" alt="Portfolio Website Screenshot" class="project-image" loading="lazy" />
             </div>
             <div class="project-details">
               <h3 class="project-title">Portfolio Website</h3>
-              <p class="project-description">My Apple-inspired portfolio website, built with HTML, CSS, and JavaScript. Designed to showcase projects with elegance, minimalism, and interactive animations.</p>
+              <p class="project-description">My Apple-inspired portfolio website, built with HTML, CSS, and JavaScript. Designed to showcase projects with elegance, minimalism, and interactive animati[...]</p>
               <a href="https://josua.github.io/portfolio" target="_blank" rel="noopener noreferrer" class="apple-link">
                 <span>Live Site</span>
                 <i class="fas fa-arrow-right"></i>
@@ -157,7 +158,7 @@
 
           <div class="project-card reveal-content">
             <div class="project-image-container">
-              <img src="images/web_scraper.PNG" alt="Web Scraper Screenshot" />
+              <img src="images/web_scraper.PNG" alt="Web Scraper Screenshot" class="project-image" loading="lazy" />
             </div>
             <div class="project-details">
               <h3 class="project-title">Web Scraper</h3>
@@ -242,4 +243,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
