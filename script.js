@@ -29,11 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         try {
-            gsap.set(element, { opacity: 0, y: 30 });
+            // faster, smaller movement for snappier feeling
+            gsap.set(element, { opacity: 0, y: 20 });
             gsap.to(element, {
                 opacity: 1,
                 y: 0,
-                duration: 0.8,
+                duration: 0.55,
                 delay: d,
                 ease: 'power2.out'
             });
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Intersection observer wrapper (if available)
+    // Intersection observer wrapper (if available) - use a lower threshold so elements begin earlier
     if (hasIO) {
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
@@ -54,17 +55,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     obs.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.06 }); // lower threshold triggers slightly earlier
 
         document.querySelectorAll('.reveal-content').forEach(el => observer.observe(el));
     } else {
         console.warn('IntersectionObserver not supported — revealing all .reveal-content immediately.');
-        document.querySelectorAll('.reveal-content').forEach((el, i) => animateElement(el, i * 0.05));
+        document.querySelectorAll('.reveal-content').forEach((el, i) => animateElement(el, i * 0.04));
     }
 
-    // Hero animations (staggered)
+    // Hero animations (staggered) - faster stagger
     const heroElements = document.querySelectorAll('.hero-title, .hero-subtitle, .apple-button');
-    heroElements.forEach((el, index) => animateElement(el, index * 0.3));
+    heroElements.forEach((el, index) => animateElement(el, index * 0.12));
 
     // Skill bars animation
     document.querySelectorAll('.skill-progress').forEach(bar => {
@@ -85,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const runSkillAnimation = () => {
             if (hasGSAP) {
                 try {
-                    gsap.to(bar, { width: `${level}%`, duration: 1.5, ease: 'power2.out' });
+                    gsap.to(bar, { width: `${level}%`, duration: 1.0, ease: 'power2.out' });
                 } catch (err) {
                     console.error('GSAP skill animation error:', err);
                     bar.style.width = `${level}%`;
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     runSkillAnimation();
                     skObs.unobserve(entries[0].target);
                 }
-            }, { threshold: 0.1 });
+            }, { threshold: 0.06 });
 
             skillObserver.observe(targetToObserve);
         } else {
@@ -129,19 +130,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             try {
-                gsap.to(button, { scale: 1.05, duration: 0.3 });
+                gsap.to(button, { scale: 1.05, duration: 0.2 });
             } catch (err) {
                 button.style.transform = 'scale(1.05)';
             }
         });
 
         button.addEventListener('pointerleave', () => {
+            if (!button) return;
             if (!hasGSAP) {
                 button.style.transform = 'scale(1)';
                 return;
             }
             try {
-                gsap.to(button, { scale: 1, duration: 0.3 });
+                gsap.to(button, { scale: 1, duration: 0.2 });
             } catch (err) {
                 button.style.transform = 'scale(1)';
             }
