@@ -1,92 +1,150 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Document loaded");
-    
-    // Basic animation function using GSAP
-    function animateElement(element, delay = 0) {
-        // Set initial state
-        gsap.set(element, {
-            opacity: 0,
-            y: 30
-        });
-        
-        // Create animation with delay
-        gsap.to(element, {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            delay: delay,
-            ease: "power2.out"
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Document loaded');
+
+    const hasGSAP = typeof gsap !== 'undefined' && gsap;
+    const hasIO = typeof IntersectionObserver !== 'undefined';
+
+    // Safe helper to parse delay values
+    const parseDelay = (v) => {
+        const n = parseFloat(v ?? '0');
+        return Number.isFinite(n) ? n : 0;
+    };
+
+    // If GSAP isn't available, reveal elements without animation
+    if (!hasGSAP) {
+        console.warn('GSAP not found — animations disabled. Elements will be revealed without animation.');
+        document.querySelectorAll('.reveal-content, .hero-title, .hero-subtitle, .apple-button').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
         });
     }
-    
-    // Create a simple intersection observer
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Get any custom delay from data attribute
-                const delay = entry.target.dataset.delay || 0;
-                animateElement(entry.target, parseFloat(delay));
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    // Observe all reveal-content elements
-    document.querySelectorAll('.reveal-content').forEach(el => {
-        observer.observe(el);
-    });
-    
-    // Hero animations (without delay)
+
+    // Basic animation function using GSAP (guarded)
+    const animateElement = (element, delay = 0) => {
+        const d = parseDelay(delay);
+        if (!element) return;
+        if (!hasGSAP) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+            return;
+        }
+        try {
+            gsap.set(element, { opacity: 0, y: 30 });
+            gsap.to(element, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: d,
+                ease: 'power2.out'
+            });
+        } catch (err) {
+            console.error('GSAP animation error:', err);
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }
+    };
+
+    // Intersection observer wrapper (if available)
+    if (hasIO) {
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.dataset?.delay ?? 0;
+                    animateElement(entry.target, parseDelay(delay));
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-content').forEach(el => observer.observe(el));
+    } else {
+        console.warn('IntersectionObserver not supported — revealing all .reveal-content immediately.');
+        document.querySelectorAll('.reveal-content').forEach((el, i) => animateElement(el, i * 0.05));
+    }
+
+    // Hero animations (staggered)
     const heroElements = document.querySelectorAll('.hero-title, .hero-subtitle, .apple-button');
-    heroElements.forEach((el, index) => {
-        animateElement(el, index * 0.3);
-    });
-    
+    heroElements.forEach((el, index) => animateElement(el, index * 0.3));
+
     // Skill bars animation
     document.querySelectorAll('.skill-progress').forEach(bar => {
-        const level = bar.getAttribute('data-level') || '50';
-        
-        // Set initial width to 0
-        gsap.set(bar, { width: 0 });
-        
-        // Create observer for each skill bar
-        const skillObserver = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    gsap.to(bar, {
-                        width: `${level}%`,
-                        duration: 1.5,
-                        ease: "power2.out"
-                    });
-                    skillObserver.unobserve(entries[0].target);
+        if (!bar) return;
+        const levelAttr = bar.getAttribute('data-level');
+        let level = parseInt(levelAttr ?? '50', 10);
+        if (!Number.isFinite(level) || level < 0) level = 0;
+        if (level > 100) level = 100;
+
+        if (hasGSAP) {
+            gsap.set(bar, { width: '0%' });
+        } else {
+            bar.style.width = '0%';
+        }
+
+        const targetToObserve = bar.parentElement ?? bar;
+
+        const runSkillAnimation = () => {
+            if (hasGSAP) {
+                try {
+                    gsap.to(bar, { width: `${level}%`, duration: 1.5, ease: 'power2.out' });
+                } catch (err) {
+                    console.error('GSAP skill animation error:', err);
+                    bar.style.width = `${level}%`;
                 }
-            },
-            { threshold: 0.1 }
-        );
-        
-        skillObserver.observe(bar.parentElement);
+            } else {
+                bar.style.width = `${level}%`;
+            }
+        };
+
+        if (hasIO) {
+            const skillObserver = new IntersectionObserver((entries, skObs) => {
+                if (entries[0] && entries[0].isIntersecting) {
+                    runSkillAnimation();
+                    skObs.unobserve(entries[0].target);
+                }
+            }, { threshold: 0.1 });
+
+            skillObserver.observe(targetToObserve);
+        } else {
+            runSkillAnimation();
+        }
     });
-    
+
     // Navigation scroll effect
     const nav = document.querySelector('.nav-container');
     if (nav) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('nav-scrolled');
-            } else {
-                nav.classList.remove('nav-scrolled');
+        const onScroll = () => {
+            if (window.scrollY > 50) nav.classList.add('nav-scrolled');
+            else nav.classList.remove('nav-scrolled');
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    // Button hover effects (guarded)
+    document.querySelectorAll('.apple-button').forEach(button => {
+        if (!button) return;
+        button.addEventListener('pointerenter', () => {
+            if (!hasGSAP) {
+                button.style.transform = 'scale(1.05)';
+                return;
+            }
+            try {
+                gsap.to(button, { scale: 1.05, duration: 0.3 });
+            } catch (err) {
+                button.style.transform = 'scale(1.05)';
             }
         });
-    }
-    
-    // Button hover effects
-    document.querySelectorAll('.apple-button').forEach(button => {
-        button.addEventListener('mouseenter', () => {
-            gsap.to(button, { scale: 1.05, duration: 0.3 });
-        });
-        
-        button.addEventListener('mouseleave', () => {
-            gsap.to(button, { scale: 1, duration: 0.3 });
+
+        button.addEventListener('pointerleave', () => {
+            if (!hasGSAP) {
+                button.style.transform = 'scale(1)';
+                return;
+            }
+            try {
+                gsap.to(button, { scale: 1, duration: 0.3 });
+            } catch (err) {
+                button.style.transform = 'scale(1)';
+            }
         });
     });
 });
