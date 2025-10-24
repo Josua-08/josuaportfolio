@@ -11,6 +11,8 @@ Willkommen auf meinem Portfolio! Hier zeige ich einige meiner Projekte, die ich 
 
 Du kannst die Portfolio-Website hier besuchen:  
 [Live-Website](https://josua-08.github.io/josuaportfolio/)
+Hier auch die Number Guessing Website:
+[Live-Website](https://josua-08.github.io/josuaportfolio/number_guessing_game.html)
 
 ---
 
