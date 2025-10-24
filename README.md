@@ -13,7 +13,7 @@ Du kannst die Portfolio-Website hier besuchen:
 [Live-Website](https://josua-08.github.io/josuaportfolio/)
 
 
-Hier auch die Number Guessing Website:
+Hier auch die Number Guessing Website um sie direkt zu besuchen:
 [Live-Website](https://josua-08.github.io/josuaportfolio/number_guessing_game.html)
 
 ---
