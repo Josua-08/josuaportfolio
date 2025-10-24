@@ -99,25 +99,16 @@
         .wrong {
             color: #FF3B30;
         }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .shake {
-            animation: shake 0.3s ease-in-out;
-        }
+        
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Number Guessing Game</h1>
         <p>Ich denke an eine Zahl zwischen 1 und 20.<br>Kannst du sie erraten?</p>
-        <input type="number" class="game-input" min="1" max="20" placeholder="Dein Tipp...">
+        <input type="number" class="game-input" min="1" max="20">
         <br>
-        <button class="submit-btn">Überprüfen</button>
+        <button class="submit-btn">Zahl eingeben</button>
         <div class="message"></div>
     </div>
 
